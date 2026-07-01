@@ -1,0 +1,64 @@
+@media (max-width: 768px) {
+    /* 1. Prevent the navigation bar elements from clipping off-screen */
+    .navbar {
+        height: auto;
+        padding: 15px 10px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    /* 2. Scale down the massive search bar so it drops below cleanly on mobile screens */
+    .nav-search {
+        width: 100%;
+        margin-left: 0;
+        order: 5; /* Forces search bar to drop to its own line nicely below logos */
+    }
+    
+    .text-search {
+        width: 100%;
+    }
+
+    /* 3. Drop your 4-column product grid down into a single stack for mobile viewports */
+    .shop {
+        grid-template-columns: 1fr; /* Changes 4 columns down into 1 single block column */
+        gap: 20px;
+        padding: 15px;
+    }
+
+    .box {
+        height: auto; /* Allows element heights to adapt cleanly based on mobile constraints */
+        padding-bottom: 20px;
+    }
+
+    /* 4. Fix footer containers from breaking horizontally */
+    .panel2 {
+        flex-direction: column;
+        height: auto;
+        padding: 20px;
+        gap: 20px;
+    }
+    
+    .panel3 {
+        flex-direction: column;
+        height: auto;
+        padding: 20px;
+        gap: 15px;
+    }
+
+    .logo2 {
+        margin-left: 0; /* Centers footer logo element on mobile */
+    }
+
+    .lang {
+        margin-right: 0;
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+    
+    /* Hide the complex, desktop-heavy link matrix layout on mobile screens */
+    .panel4 {
+        display: none; 
+    }
+}
+
