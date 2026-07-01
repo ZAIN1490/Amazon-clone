@@ -380,14 +380,16 @@ ul {
 }
 
 
-@media(max-width: 900px){
-    .text-search{
-        display: none;
+@@media (max-width: 768px) {
+    .box {
+        width: 45%;
     }
-    .navbar{
-        flex-wrap: wrap;
-        height: 20vh;
-    } 
+}
+
+@media (max-width: 480px) {
+    .box {
+        width: 90%;
     }
+}
  
 }
