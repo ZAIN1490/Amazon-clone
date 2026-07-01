@@ -185,12 +185,12 @@ i {
 }
 
 .shop {
-    display: flex;
-
-    justify-content: space-evenly;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
     background-color: #e2e7e6;
+    padding: 10px;
 }
-
 
 .box {
     height: 100px;
