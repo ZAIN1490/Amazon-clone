@@ -379,8 +379,7 @@ ul {
     padding-top: 3px;
 }
 
-
-@@media (max-width: 768px) {
+@media (max-width: 768px) {
     .box {
         width: 45%;
     }
@@ -390,6 +389,4 @@ ul {
     .box {
         width: 90%;
     }
-}
- 
 }
