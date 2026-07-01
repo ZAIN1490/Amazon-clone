@@ -33,18 +33,6 @@
     border: 1.3px solid white;
 }
 
-.del {
-    color: #cccccc;
-    font-size: 0.85rem;
-    margin-left: 15px;
-
-}
-
-.pak {
-    color: #ffffff;
-    font-size: 1rem;
-    margin-left: 3px;
-}
 
 .nav-search {
     display: flex;
@@ -76,9 +64,35 @@
     border-radius: 3px;
 }
 
+
+.location {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Update your existing .del class */
+.del {
+    color: #cccccc;
+    font-size: 0.85rem;
+    margin-left: 45px; /* Aligns perfectly above the 'Pakistan' text */
+    margin-bottom: -5px; /* Pulls the bottom text slightly closer */
+}
+
+/* Update your existing .loc-icon class */
 .loc-icon {
     display: flex;
+    align-items: center; /* Keeps the pin icon and 'Pakistan' centered vertically */
 }
+
+/* Update your existing .pak class */
+.pak {
+    color: #ffffff;
+    font-size: 1rem;
+    margin-left: 0px; /* Removes the extra offset */
+    font-weight: 700;
+}
+
 
 .search-icon {
     width: 40px;
@@ -192,26 +206,28 @@ i {
     padding: 10px;
 }
 
-.box {
-    height: 100px;
-
-
-    width: 24%;
-    height: 400px;
-    background-color: #ffffff;
-    padding: 20px 0px 15px;
-    margin-top: 10px;
-
-}
 
 .box-content {
     margin-left: 10px;
     margin-right: 10px;
 }
+/* Update your existing .box class */
+.box {
+    background-color: #ffffff;
+    padding: 20px 0px 15px;
+    margin-top: 10px;
+    height: 400px;
+    width: 100%; /* Changed from 24% so it fills its grid space perfectly */
+    box-sizing: border-box; /* Crucial so padding doesn't break your layout widths */
+}
 
+/* Update your existing .b1-img class */
 .b1-img {
-    height: 300px;
-    background-size: cover;
+    height: 280px;
+    width: 100%; /* Forces the background image container to open up wide */
+    background-size: contain; /* Prevents the image from being cut off or stretched */
+    background-repeat: no-repeat;
+    background-position: center;
     margin-top: 1rem;
     margin-bottom: 1rem;
 }
