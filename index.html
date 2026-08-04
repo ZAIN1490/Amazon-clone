@@ -1,436 +1,477 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amazon Clone</title>
-    <link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="responsive.css"> 
-
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudfare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-        integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amazon | Luxe Edition</title>
+  <meta name="description" content="Experience Next-Gen Premium E-Commerce.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
-
 <body>
-    <header>
-        <div class="navbar">
 
-            <!-- Box 1 -->
-            <div class="nav-logo border">
-                <div class="logo1">
+  <!-- Reading Progress Bar -->
+  <div id="scroll-progress"></div>
 
-                </div>
-            </div>
+  <!-- Toast Notification Container -->
+  <div id="toast-container" aria-live="polite"></div>
 
-            <!-- Box 2 -->
+  <!-- Announcement Bar -->
+  <aside class="top-announcement">
+    <div class="announcement-content">
+      <span>✨ <strong>Amazon Luxe Prime:</strong> Enjoy Same-Day Premium Delivery &amp; Exclusive Deals.</span>
+      <a href="#prime" class="link-glow">Explore Benefits &rarr;</a>
+    </div>
+  </aside>
 
-            <div class="location border">
-                <p class="del">Deliver to</p>
-                <div class="loc-icon">
-                    <i class="fa-solid fa-location-dot"></i>
+  <!-- Sticky Navbar -->
+  <header class="navbar-sticky">
+    <nav class="nav-container">
+      
+      <!-- Brand Logo -->
+      <a href="#" class="nav-logo" aria-label="Amazon Homepage">
+        <span class="logo-text">amazon<span class="logo-accent">.luxe</span></span>
+        <div class="logo-smile"></div>
+      </a>
 
-                    <p class="pak">Pakistan</p>
-                </div>
-            </div>
+      <!-- Location Selector -->
+      <button class="nav-location" id="location-btn" aria-label="Select Delivery Location">
+        <i class="fa-solid fa-location-dot loc-icon"></i>
+        <div class="loc-text">
+          <span class="loc-label">Deliver to</span>
+          <span class="loc-val" id="current-location">New York 10001</span>
+        </div>
+      </button>
 
+      <!-- Search Bar with Live Engine -->
+      <div class="nav-search-wrapper">
+        <div class="search-cat-dropdown">
+          <select id="search-category" aria-label="Search Category">
+            <option value="all">All Departments</option>
+            <option value="electronics">Electronics</option>
+            <option value="fashion">Luxury Fashion</option>
+            <option value="home">Home &amp; Living</option>
+            <option value="computing">Computing</option>
+          </select>
+          <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+        </div>
+        <input type="text" id="main-search-input" placeholder="Search millions of luxury products..." autocomplete="off">
+        <button class="search-btn" id="search-submit" aria-label="Submit Search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+        
+        <!-- Live Search Suggestions Overlay -->
+        <div class="search-suggestions" id="search-suggestions" hidden></div>
+      </div>
 
-            <!-- Box 3 -->
-
-            <div class="nav-search">
-                <select class="nav-select">
-                    <option>All</option>
-
-                </select>
-                <input class="text-search" type="text" placeholder="Search Amazon">
-                <div class="search-icon">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </div>
-            </div>
-
-            <!-- Box 4 -->
-
-            <div class="signin border">
-                <p><span class="sign">Hello, sign in</span></p>
-                <p class="account">Account & List</p>
-            </div>
-
-            <!-- Box 5 -->
-
-            <div class="return border">
-                <p><span class="sign">Returns</span></p>
-                <p class="account">& orders</p>
-            </div>
-
-
-            <!-- Box 5 -->
-
-            <div class="cart border">
-                <i class="fa-solid fa-cart-shopping"></i>
-                cart
-            </div>
-
-
+      <!-- Action Items -->
+      <div class="nav-actions">
+        
+        <!-- Preferences Selector -->
+        <div class="nav-pill-selector">
+          <i class="fa-solid fa-globe"></i>
+          <span>EN / USD</span>
         </div>
 
-        <!-- Panel -->
+        <!-- Dark Mode Toggle Button -->
+        <button class="theme-toggle-btn" id="theme-toggle" aria-label="Toggle Theme">
+          <i class="fa-solid fa-moon icon-dark"></i>
+          <i class="fa-solid fa-sun icon-light"></i>
+        </button>
 
-        <div class="panel">
-            <div class="all">
-                <i class="fa-solid fa-bars"></i>
-
-                All
-            </div>
-
-            <div class="ops">
-                <a href="#">Today deals</a>
-                <a href="#">Customer Services</a>
-                <a href="#">Registry</a>
-                <a href="#">Gift Cards</a>
-                <a href="#">Sell</a>
-
-            </div>
-
-
-            <div class="deal border">
-                Shop deal in Electronics
-            </div>
+        <!-- Account / Sign In Dropdown -->
+        <div class="nav-user-dropdown-wrapper">
+          <button class="nav-user-btn" id="auth-modal-open">
+            <span class="user-sub">Hello, Sign In</span>
+            <span class="user-main">Account &amp; Lists <i class="fa-solid fa-chevron-down"></i></span>
+          </button>
         </div>
 
+        <!-- Wishlist Direct Link -->
+        <button class="icon-nav-btn" id="wishlist-drawer-open" aria-label="Wishlist">
+          <i class="fa-regular fa-heart"></i>
+          <span class="badge-count" id="wishlist-badge">0</span>
+        </button>
 
-    </header>
+        <!-- Shopping Cart Launcher -->
+        <button class="icon-nav-btn cart-btn-highlight" id="cart-drawer-open" aria-label="Cart">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span class="badge-count" id="cart-badge">0</span>
+        </button>
 
+        <!-- Mobile Hamburger Button -->
+        <button class="mobile-hamburger" id="mobile-menu-toggle" aria-label="Open Navigation Menu">
+          <i class="fa-solid fa-bars-staggered"></i>
+        </button>
 
+      </div>
+    </nav>
 
-
-    <div class="container">
-        <div class="msg">
-            <p>You are on Amazon.com. You can now also shop on amazon for million of products shopping in Pakistan.<a
-                    href="#"> Click here to go to amazon</a></p>
+    <!-- Navigation Sub-Bar -->
+    <div class="sub-nav">
+      <div class="sub-nav-content">
+        <button class="sub-nav-all" id="mega-menu-btn"><i class="fa-solid fa-bars"></i> All Categories</button>
+        <ul class="sub-nav-links">
+          <li><a href="#flash-deals">Today's Deals</a></li>
+          <li><a href="#categories">Featured Collections</a></li>
+          <li><a href="#prime">Prime Exclusive</a></li>
+          <li><a href="#products">New Arrivals</a></li>
+          <li><a href="#testimonials">Customer Care</a></li>
+        </ul>
+        <div class="sub-nav-promo">
+          <i class="fa-solid fa-bolt"></i> Lightning Deals Ending Soon
         </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Slider Section -->
+    <section class="hero-slider-section">
+      <div class="slider-wrapper">
+        <div class="slide active" style="background-image: linear-gradient(180deg, rgba(15, 17, 17, 0.2) 0%, rgba(15, 17, 17, 0.9) 100%), url('https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=2000&auto=format&fit=crop');">
+          <div class="hero-caption">
+            <span class="hero-tag">New Season Arrival</span>
+            <h1 class="hero-title">Spatial Audio &amp; Pure Craftsmanship</h1>
+            <p class="hero-desc">Redefining acoustic perfection with adaptive active noise cancellation.</p>
+            <div class="hero-cta-group">
+              <a href="#products" class="btn-primary-luxe">Shop Next-Gen Audio</a>
+              <a href="#prime" class="btn-glass">Join Prime Free</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide" style="background-image: linear-gradient(180deg, rgba(15, 17, 17, 0.2) 0%, rgba(15, 17, 17, 0.9) 100%), url('https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=2000&auto=format&fit=crop');">
+          <div class="hero-caption">
+            <span class="hero-tag">Precision Engineering</span>
+            <h1 class="hero-title">Ultra-Slim OLED Studio Display</h1>
+            <p class="hero-desc">Over 1 Billion colors crafted into architectural minimalism.</p>
+            <div class="hero-cta-group">
+              <a href="#products" class="btn-primary-luxe">Explore Display Tech</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slider Controls -->
+      <button class="slider-arrow prev-slide" id="slider-prev"><i class="fa-solid fa-chevron-left"></i></button>
+      <button class="slider-arrow next-slide" id="slider-next"><i class="fa-solid fa-chevron-right"></i></button>
+      
+      <div class="slider-dots" id="slider-dots"></div>
+    </section>
+
+    <!-- Top Categories Section -->
+    <section class="section-padding container-wide" id="categories">
+      <div class="section-header">
+        <div>
+          <span class="section-subtitle">Curated Departments</span>
+          <h2 class="section-title">Explore by Specialty</h2>
+        </div>
+      </div>
+
+      <div class="categories-grid">
+        <div class="category-card" data-category="electronics">
+          <div class="cat-img-wrapper">
+            <img src="https://images.unsplash.com/photo-1546435770-a3e426bf472b?q=80&w=600&auto=format&fit=crop" alt="Electronics" loading="lazy">
+          </div>
+          <div class="cat-info">
+            <h3>Consumer Electronics</h3>
+            <span class="cat-count">120+ Products</span>
+          </div>
+        </div>
+
+        <div class="category-card" data-category="fashion">
+          <div class="cat-img-wrapper">
+            <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?q=80&w=600&auto=format&fit=crop" alt="Fashion" loading="lazy">
+          </div>
+          <div class="cat-info">
+            <h3>Apparel &amp; Apparel</h3>
+            <span class="cat-count">85+ Products</span>
+          </div>
+        </div>
+
+        <div class="category-card" data-category="home">
+          <div class="cat-img-wrapper">
+            <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=600&auto=format&fit=crop" alt="Home Decor" loading="lazy">
+          </div>
+          <div class="cat-info">
+            <h3>Home Architecture</h3>
+            <span class="cat-count">64+ Products</span>
+          </div>
+        </div>
+
+        <div class="category-card" data-category="computing">
+          <div class="cat-img-wrapper">
+            <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=600&auto=format&fit=crop" alt="Computing" loading="lazy">
+          </div>
+          <div class="cat-info">
+            <h3>Computers &amp; Workstations</h3>
+            <span class="cat-count">90+ Products</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Flash Deals Section -->
+    <section class="flash-sale-banner container-wide" id="flash-deals">
+      <div class="flash-sale-card glassmorphism">
+        <div class="flash-header">
+          <div class="flash-title-group">
+            <i class="fa-solid fa-bolt-lightning flash-icon"></i>
+            <div>
+              <h2>Lightning Flash Sale</h2>
+              <p>Limited quantity offers refreshed daily.</p>
+            </div>
+          </div>
+          <div class="countdown-wrapper">
+            <span class="countdown-label">Ends In:</span>
+            <div class="countdown-timer" id="countdown-timer">
+              <span id="hours">08</span>:
+              <span id="minutes">42</span>:
+              <span id="seconds">19</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Dynamic Products Matrix with Filtering Engine -->
+    <section class="section-padding container-wide" id="products">
+      <div class="products-layout">
+        
+        <!-- Sidebar Controls -->
+        <aside class="products-sidebar">
+          <div class="sidebar-block">
+            <h3>Department</h3>
+            <ul class="filter-list" id="filter-category">
+              <li class="active" data-value="all">All Departments</li>
+              <li data-value="electronics">Electronics</li>
+              <li data-value="fashion">Luxury Fashion</li>
+              <li data-value="home">Home &amp; Decor</li>
+              <li data-value="computing">Computing Tech</li>
+            </ul>
+          </div>
+
+          <div class="sidebar-block">
+            <h3>Maximum Price</h3>
+            <div class="price-range-wrapper">
+              <input type="range" id="price-range" min="50" max="2500" step="50" value="2500">
+              <div class="price-labels">
+                <span>$50</span>
+                <span id="price-range-val">$2500</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="sidebar-block">
+            <h3>Minimum Rating</h3>
+            <div class="rating-filter-group" id="filter-rating">
+              <label><input type="radio" name="rating-filter" value="0" checked> Any Rating</label>
+              <label><input type="radio" name="rating-filter" value="4.5"> 4.5 Stars &amp; Above</label>
+              <label><input type="radio" name="rating-filter" value="4.0"> 4.0 Stars &amp; Above</label>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Product Grid Core -->
+        <div class="products-main-content">
+          <div class="products-toolbar">
+            <span class="results-count" id="results-count">Showing items</span>
+            <div class="sort-wrapper">
+              <label for="sort-select">Sort By:</label>
+              <select id="sort-select">
+                <option value="featured">Featured Picks</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="rating">Highest Rated</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Product Grid Dynamic Output -->
+          <div class="products-grid" id="products-grid">
+            <!-- Handcrafted ES6 dynamic injection point -->
+          </div>
+
+          <div class="pagination-wrapper">
+            <button class="btn-secondary-luxe" id="load-more-btn">Load More Products</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Amazon Prime Feature Banner -->
+    <section class="prime-section container-wide" id="prime">
+      <div class="prime-banner-card">
+        <div class="prime-content">
+          <span class="prime-badge"><i class="fa-solid fa-check"></i> prime</span>
+          <h2>Unlimited Free Delivery &amp; Exclusive Entertainment</h2>
+          <p>Join over 200 million members enjoying fast delivery, award-winning Prime Video, and ad-free music.</p>
+          <button class="btn-prime-action">Start 30-Day Free Trial</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonial Reviews -->
+    <section class="section-padding container-wide" id="testimonials">
+      <div class="section-header">
+        <span class="section-subtitle">Verified Feedback</span>
+        <h2 class="section-title">Trusted by Millions Worldwide</h2>
+      </div>
+
+      <div class="testimonials-grid">
+        <div class="testimonial-card glassmorphism">
+          <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+          <p>"The speed of order processing combined with the premium layout feels like buying from a high-end boutique."</p>
+          <div class="reviewer-info">
+            <div class="avatar">EB</div>
+            <div>
+              <h4>Elena Rostova</h4>
+              <span>Verified Luxe Member</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card glassmorphism">
+          <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+          <p>"Intuitive interface, effortless dark mode transition, and flawless customer support. Pure perfection."</p>
+          <div class="reviewer-info">
+            <div class="avatar">MA</div>
+            <div>
+              <h4>Marcus Vance</h4>
+              <span>Architect</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Live Statistics Counter -->
+    <section class="stats-counter-bar">
+      <div class="container-wide stats-grid">
+        <div class="stat-item">
+          <h3 class="counter-val" data-target="250000">0</h3>
+          <p>Active Shipments</p>
+        </div>
+        <div class="stat-item">
+          <h3 class="counter-val" data-target="99">0</h3>
+          <p>% On-Time Delivery</p>
+        </div>
+        <div class="stat-item">
+          <h3 class="counter-val" data-target="48">0</h3>
+          <p>Global Warehouses</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Side Drawer Shopping Cart -->
+  <div class="drawer-overlay" id="drawer-overlay"></div>
+  
+  <aside class="cart-drawer" id="cart-drawer">
+    <div class="drawer-header">
+      <h3>Shopping Cart (<span id="cart-drawer-count">0</span>)</h3>
+      <button class="drawer-close-btn" id="cart-drawer-close">&times;</button>
+    </div>
+    
+    <div class="drawer-body" id="cart-items-container">
+      <!-- Dynamic cart items rendered via JS -->
     </div>
 
+    <div class="drawer-footer">
+      <div class="summary-row">
+        <span>Subtotal</span>
+        <span id="cart-subtotal">$0.00</span>
+      </div>
+      <div class="summary-row">
+        <span>Estimated Tax (8%)</span>
+        <span id="cart-tax">$0.00</span>
+      </div>
+      <div class="summary-row grand-total">
+        <span>Grand Total</span>
+        <span id="cart-total">$0.00</span>
+      </div>
+      <button class="btn-checkout-luxe" id="checkout-btn">Proceed to Express Checkout</button>
+    </div>
+  </aside>
 
-    <div class="shop">
-        <div class="box1 box">
-            <div class="box-content">
-                <h3>Clothes for You</h3>
-                <div class="b1-img" style="background-image: url(pics/box1_image.jpg);">
+  <!-- Quick View Modal -->
+  <div class="modal-backdrop" id="quick-view-modal">
+    <div class="modal-content glassmorphism">
+      <button class="modal-close" id="modal-close-btn">&times;</button>
+      <div class="modal-body" id="modal-body-content">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
 
-                </div>
-                <a href="#">See more</a>
-            </div>
-        </div>
-        <div class="box2 box">
-            <div class="box-content">
-                <h3>Shampoo and Brushes</h3>
-                <div class="b1-img" style="background-image: url(pics/box2_image.jpg);">
+  <!-- Back To Top Button -->
+  <button id="back-to-top" class="back-to-top-btn" aria-label="Back to top">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
 
-                </div>
-                <a href="#">See more</a>
-            </div>
-        </div>
-        <div class="box3 box">
-            <div class="box-content">
-                <h3>Lamp for You</h3>
-                <div class="b1-img" style="background-image: url(pics/box3_image.jpg);">
+  <!-- Footer -->
+  <footer class="main-footer">
+    <button class="back-to-top-bar" id="back-to-top-bar">Back to top</button>
+    
+    <div class="footer-primary container-wide">
+      <div class="footer-col">
+        <h4>Get to Know Us</h4>
+        <ul>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">About Amazon Luxe</a></li>
+          <li><a href="#">Investor Relations</a></li>
+          <li><a href="#">Amazon Devices</a></li>
+        </ul>
+      </div>
 
-                </div>
-                <a href="#">See more</a>
-            </div>
-        </div>
-        <div class="box4 box">
-            <div class="box-content">
-                <h3>Andoid Mobiles</h3>
-                <div class="b1-img" style="background-image: url(pics/box4_image.jpg);">
+      <div class="footer-col">
+        <h4>Make Money with Us</h4>
+        <ul>
+          <li><a href="#">Sell products on Amazon</a></li>
+          <li><a href="#">Sell on Amazon Business</a></li>
+          <li><a href="#">Become an Affiliate</a></li>
+          <li><a href="#">Self-Publish with Us</a></li>
+        </ul>
+      </div>
 
-                </div>
-                <a href="#">See more</a>
-            </div>
-        </div>
+      <div class="footer-col">
+        <h4>Amazon Payment Products</h4>
+        <ul>
+          <li><a href="#">Amazon Rewards Visa</a></li>
+          <li><a href="#">Amazon.com Store Card</a></li>
+          <li><a href="#">Shop with Points</a></li>
+          <li><a href="#">Reload Your Balance</a></li>
+        </ul>
+      </div>
 
+      <div class="footer-col">
+        <h4>Let Us Help You</h4>
+        <ul>
+          <li><a href="#">Amazon and COVID-19</a></li>
+          <li><a href="#">Your Account</a></li>
+          <li><a href="#">Your Orders</a></li>
+          <li><a href="#">Shipping Rates &amp; Policies</a></li>
+          <li><a href="#">Returns &amp; Replacements</a></li>
+        </ul>
+      </div>
     </div>
 
-
-
-    <div class="shop">
-        <div class="box1 box">
-            <div class="box-content">
-                <h3>Women Makeup cosmetics</h3>
-                <div class="b1-img" style="background-image: url(pics/box5_image.jpg);">
-
-                </div>
-                <a href="#">See more</a>
-            </div>
+    <div class="footer-bottom">
+      <div class="container-wide footer-bottom-content">
+        <p>&copy; 1996-2026, Amazon.com, Inc. or its affiliates. Mastercrafted Edition.</p>
+        <div class="legal-links">
+          <a href="#">Conditions of Use</a>
+          <a href="#">Privacy Notice</a>
+          <a href="#">Your Ads Privacy Choices</a>
         </div>
-        <div class="box2 box">
-            <div class="box-content">
-                <h3>Pets for you</h3>
-                <div class="b1-img" style="background-image: url(pics/box6_image.jpg);">
-
-                </div>
-                <a href="#">See more</a>
-            </div>
-        </div>
-        <div class="box3 box">
-            <div class="box-content">
-                <h3>Toys for kids</h3>
-                <div class="b1-img" style="background-image: url(pics/box7_image.jpg);">
-
-                </div>
-                <a href="#">See more</a>
-            </div>
-        </div>
-        <div class="box4 box">
-            <div class="box-content">
-                <h3>Women outfit</h3>
-                <div class="b1-img" style="background-image: url(pics/box8_image.jpg);">
-
-                </div>
-                <a href="#">See more</a>
-            </div>
-        </div>
-
+      </div>
     </div>
+  </footer>
 
-
-    <footer>
-        <div class="f-panel">
-            Back to top
-        </div>
-
-        <div class="panel2">
-            <ul class="p1">
-
-                <p class="know">Get to Know us</p>
-                <a href="#">Careers</a>
-                <a href="#">Blog</a>
-                <a href="#">About Amazon</a>
-                <a href="#">Investor relation</a>
-                <a href="#">Amazon science</a>
-
-            </ul>
-
-            <ul class="p1">
-
-                <p class="know">Get to Know us</p>
-                <a href="#">Careers</a>
-                <a href="#">Blog</a>
-                <a href="#">About Amazon</a>
-                <a href="#">Investor relation</a>
-                <a href="#">Amazon science</a>
-
-            </ul>
-            <ul class="p1">
-
-                <p class="know">Get to Know us</p>
-                <a href="#">Careers</a>
-                <a href="#">Blog</a>
-                <a href="#">About Amazon</a>
-                <a href="#">Investor relation</a>
-                <a href="#">Amazon science</a>
-
-            </ul>
-            <ul class="p1">
-
-                <p class="know">Get to Know us</p>
-                <a href="#">Careers</a>
-                <a href="#">Blog</a>
-                <a href="#">About Amazon</a>
-                <a href="#">Investor relation</a>
-                <a href="#">Amazon science</a>
-
-            </ul>
-        </div>
-
-
-        <div class="panel3">
-            <div class="logo2">
-
-            </div>
-
-            <div class="lang">
-                <p class="eng">English</p>
-                <p class="usd">USD-US.DOLLAR</p>
-                <p class="state">United state</p>
-
-            </div>
-        </div>
-
-
-
-        <div class="panel4">
-            <div class="p4-l1">
-                <div class="p4-b1">
-                    <p class="b1-head">Amazon Music</p>
-                    <p class="b1-p">Stream million of songs</p>
-                </div>
-
-                <div class="p4-b1">
-                    <p class="b1-head">Amazon Global</p>
-                    <p class="b1-p">Ships order internationally</p>
-                </div>
-
-                <div class="p4-b1">
-                    <p class="b1-head">Comixology</p>
-                    <p class="b1-p">Thousand of digital comics</p>
-                </div>
-
-                <div class="p4-b1">
-                    <p class="b1-head">Prime video direct</p>
-                    <p class="b1-p">Video distribute easily</p>
-                </div>
-            
-            </div>
-
-
-
-
-
-            
-                <div class="p4-l1">
-                    <div class="p4-b1">
-                        <p class="b1-head">Amazon Advertising</p>
-                        <p class="b1-p">Find, attract and engage customer</p>
-                    </div>
-    
-                    <div class="p4-b1">
-                        <p class="b1-head">Home services</p>
-                        <p class="b1-p">Experience Pros Happines guarrantee</p>
-                    </div>
-    
-                    <div class="p4-b1">
-                        <p class="b1-head">DRP revie</p>
-                        <p class="b1-p">Digital Photography</p>
-                    </div>
-    
-                    <div class="p4-b1">
-                        <p class="b1-head">Shopbop</p>
-                        <p class="b1-p">Designer fashion brands</p>
-                    </div>
-                
-                </div>
-
-
-
-
-                
-                <div class="p4-l1">
-                    <div class="p4-b1">
-                        <p class="b1-head">Amazon Advertising</p>
-                        <p class="b1-p">Find, attract and engage customer</p>
-                    </div>
-    
-                    <div class="p4-b1">
-                        <p class="b1-head">Home services</p>
-                        <p class="b1-p">Experience Pros Happines guarrantee</p>
-                    </div>
-    
-                    <div class="p4-b1">
-                        <p class="b1-head">DRP revie</p>
-                        <p class="b1-p">Digital Photography</p>
-                    </div>
-    
-                    <div class="p4-b1">
-                        <p class="b1-head">Shopbop</p>
-                        <p class="b1-p">Designer fashion brands</p>
-                    </div>
-
-                    <div class="p4-b1">
-                        <p class="b1-head">Shopbop</p>
-                        <p class="b1-p">Designer fashion brands</p>
-                    </div>
-                
-                </div>
-
-
-                <div class="p4-l1">
-                    <div class="p4-b1">
-                        <p class="b1-head">Amazon Advertising</p>
-                        <p class="b1-p">Find, attract and engage customer</p>
-                    </div>
-    
-                    <div class="p4-b1">
-                        <p class="b1-head">Home services</p>
-                        <p class="b1-p">Experience Pros Happines guarrantee</p>
-                    </div>
-    
-                    <div class="p4-b1">
-                        <p class="b1-head">DRP revie</p>
-                        <p class="b1-p">Digital Photography</p>
-                    </div>
-    
-                    <div class="p4-b1">
-                        <p class="b1-head">Shopbop</p>
-                        <p class="b1-p">Designer fashion brands</p>
-                    </div>
-
-                    <div class="p4-b1">
-                        <p class="b1-head">Shopbop</p>
-                        <p class="b1-p">Designer fashion brands</p>
-                    </div>
-                
-                </div>
-
-
-
-
-
-                <div class="p4-l1">
-                    <div class="p4-b1">
-                        <p class="b1-head">Amazon Advertising</p>
-                        <p class="b1-p">Find, attract and engage customer</p>
-                    </div>
-    
-                    <div class="p4-b1">
-                        <p class="b1-head">Home services</p>
-                        <p class="b1-p">Experience Pros Happines guarrantee</p>
-                    </div>
-    
-                    <div class="p4-b1">
-                        <p class="b1-head">DRP revie</p>
-                        <p class="b1-p">Digital Photography</p>
-                    </div>
-    
-                    <div class="p4-b1">
-                        <p class="b1-head">Shopbop</p>
-                        <p class="b1-p">Designer fashion brands</p>
-                    </div>
-
-                   
-                    
-                </div>
-    
-
-
-        </div>
-
-
-        <div class="panel5">
-            <div class="p5-1">
-                <a href="#" class="condition">Condition of use</a>
-                <a href="#" class="Privacy">Privacy Note</a>
-                <a href="#" class="ads-choice">Your ads privacy choices</a>
-
-            </div>
-            <div class="p5-2"></div>
-
-            <div class="p5-2">
-                <div class="copyright">
-                    <p>&copy;1996-2023, Amazon.com, Inc. or its affliates,</p>
-                </div>
-            </div>
-        </div>
-
-
-
-
-    </footer>
-
-
-
+  <script src="script.js"></script>
 </body>
-
 </html>
