@@ -47,6 +47,11 @@ html, body {
   color: var(--text-primary);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
+/* Hide mobile search row on desktop by default */
+.mobile-search-row {
+  display: none !important;
+}
+
 
 /* Scroll Progress Bar */
 .scroll-progress {
