@@ -22,69 +22,67 @@
   <!-- Top Scroll Progress Bar -->
   <div class="scroll-progress" id="scroll-progress"></div>
 
-  <!-- Streamlined Header -->
-  <header class="navbar-sticky">
-    <nav class="nav-container">
+  <!-- Streamlined Mobile-Optimized Header -->
+<header class="navbar-sticky">
+  <nav class="nav-container">
+    
+    <!-- Left: Navigation Drawer Toggle & Logo -->
+    <div class="nav-left-group">
+      <button class="menu-trigger-btn" id="sidebar-toggle" aria-label="Open Navigation Drawer">
+        <i class="fa-solid fa-bars-staggered"></i>
+      </button>
       
-      <!-- Left: Navigation Drawer Toggle & Logo -->
-      <div class="nav-left-group">
-        <button class="menu-trigger-btn" id="sidebar-toggle" aria-label="Open Navigation Drawer">
-          <i class="fa-solid fa-bars-staggered"></i>
-        </button>
-        
-        <a href="#" class="nav-logo" aria-label="Amazon Homepage">
-          <span class="logo-text">amazon<span class="logo-accent">.luxe</span></span>
-        </a>
-      </div>
+      <a href="#" class="nav-logo" aria-label="Amazon Homepage">
+        <span class="logo-text">amazon<span class="logo-accent">.luxe</span></span>
+      </a>
+    </div>
 
-      <!-- Center: Clean Search Pill -->
-      <div class="nav-search-wrapper">
-        <i class="fa-solid fa-magnifying-glass search-leading-icon"></i>
-        <input type="text" id="main-search-input" placeholder="Search luxury products, tech, and dynamic categories..." autocomplete="off">
-        <button class="search-clear-btn" id="search-clear" hidden>&times;</button>
-        
-        <div class="search-suggestions" id="search-suggestions" hidden></div>
-      </div>
+    <!-- Center: Desktop Search Pill (Hidden on Mobile) -->
+    <div class="nav-search-wrapper desktop-search-only">
+      <i class="fa-solid fa-magnifying-glass search-leading-icon"></i>
+      <input type="text" id="main-search-input" placeholder="Search luxury products, tech, and dynamic categories..." autocomplete="off">
+      <button class="search-clear-btn" id="search-clear" hidden>&times;</button>
+      
+      <div class="search-suggestions" id="search-suggestions" hidden></div>
+    </div>
 
-      <!-- Right: Essential Controls -->
-      <div class="nav-right-group">
-        <button class="icon-nav-btn" id="theme-toggle" aria-label="Toggle Theme">
-          <i class="fa-solid fa-moon icon-dark"></i>
-          <i class="fa-solid fa-sun icon-light"></i>
-        </button>
+    <!-- Right: Essential Controls (Theme & Cart Only) -->
+    <div class="nav-right-group">
+      <button class="icon-nav-btn" id="theme-toggle" aria-label="Toggle Theme">
+        <i class="fa-solid fa-moon icon-dark"></i>
+        <i class="fa-solid fa-sun icon-light"></i>
+      </button>
 
-        <button class="nav-user-btn" id="auth-modal-open">
-          <i class="fa-regular fa-user"></i>
-          <span class="nav-btn-label">Account</span>
-        </button>
+      <button class="icon-nav-btn cart-btn-highlight" id="cart-drawer-open" aria-label="Cart">
+        <i class="fa-solid fa-bag-shopping"></i>
+        <span class="badge-count" id="cart-badge">0</span>
+      </button>
+    </div>
+  </nav>
 
-        <button class="icon-nav-btn" id="wishlist-drawer-open" aria-label="Wishlist">
-          <i class="fa-regular fa-heart"></i>
-          <span class="badge-count" id="wishlist-badge">0</span>
-        </button>
+  <!-- Mobile Search Row (Appears below top bar on mobile) -->
+  <div class="mobile-search-row">
+    <div class="nav-search-wrapper">
+      <i class="fa-solid fa-magnifying-glass search-leading-icon"></i>
+      <input type="text" class="mobile-search-input" placeholder="Search products..." autocomplete="off">
+    </div>
+  </div>
 
-        <button class="icon-nav-btn cart-btn-highlight" id="cart-drawer-open" aria-label="Cart">
-          <i class="fa-solid fa-bag-shopping"></i>
-          <span class="badge-count" id="cart-badge">0</span>
-        </button>
-      </div>
-    </nav>
-
-    <!-- Sub-Navigation Strip -->
-    <div class="sub-nav">
-      <div class="sub-nav-content">
-        <ul class="sub-nav-links">
-          <li><a href="#flash-deals" class="active-link">Today's Deals</a></li>
-          <li><a href="#categories">Featured Collections</a></li>
-          <li><a href="#prime">Prime Exclusive</a></li>
-          <li><a href="#products">New Arrivals</a></li>
-        </ul>
-        <div class="sub-nav-promo">
-          <i class="fa-solid fa-bolt"></i> Lightning Deals Ending Soon
-        </div>
+  <!-- Sub-Navigation Strip -->
+  <div class="sub-nav">
+    <div class="sub-nav-content">
+      <ul class="sub-nav-links">
+        <li><a href="#flash-deals" class="active-link">Today's Deals</a></li>
+        <li><a href="#categories">Featured Collections</a></li>
+        <li><a href="#prime">Prime Exclusive</a></li>
+        <li><a href="#products">New Arrivals</a></li>
+      </ul>
+      <div class="sub-nav-promo">
+        <i class="fa-solid fa-bolt"></i> Lightning Deals Ending Soon
       </div>
     </div>
-  </header>
+  </div>
+</header>
 
   <!-- Flyout Menu Drawer -->
   <div class="drawer-overlay" id="menu-drawer-overlay"></div>
