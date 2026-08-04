@@ -47,11 +47,11 @@ html, body {
   color: var(--text-primary);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
+
 /* Hide mobile search row on desktop by default */
 .mobile-search-row {
   display: none !important;
 }
-
 
 /* Scroll Progress Bar */
 .scroll-progress {
@@ -215,17 +215,19 @@ html, body {
   pointer-events: auto;
 }
 
+/* Common Drawer Structure */
 .side-menu-drawer, .cart-drawer {
   position: fixed;
   top: 0;
   height: 100vh;
   width: 100%;
-  max-width: 380px;
+  max-width: 320px;
   background: var(--bg-surface);
   z-index: 2001;
   display: flex;
   flex-direction: column;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
 }
 
 .side-menu-drawer { left: 0; transform: translateX(-100%); }
@@ -233,8 +235,9 @@ html, body {
 
 .side-menu-drawer.active, .cart-drawer.active { transform: translateX(0); }
 
+/* Header Styling for Both Drawers */
 .side-drawer-header, .cart-drawer-header {
-  padding: 16px 20px;
+  padding: 20px 18px;
   background: var(--navy-dark);
   color: #fff;
   display: flex;
@@ -242,18 +245,182 @@ html, body {
   justify-content: space-between;
 }
 
+.user-profile-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: #ffffff;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.greeting-sub {
+  font-size: 0.75rem;
+  color: #a0aec0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.user-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0;
+  color: #ffffff;
+}
+
 .drawer-close-btn {
   background: none;
   border: none;
-  color: #fff;
-  font-size: 1.5rem;
+  color: #ffffff;
+  font-size: 1.6rem;
   cursor: pointer;
+  line-height: 1;
+  opacity: 0.8;
+  transition: opacity 0.2s;
 }
 
+.drawer-close-btn:hover {
+  opacity: 1;
+}
+
+/* Side Navigation Drawer Body & Components */
 .side-drawer-body, .cart-drawer-items {
-  padding: 20px;
+  padding: 20px 16px;
   flex: 1;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Interactive Drawer Cards (Location & Preferences) */
+.drawer-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.drawer-card:hover {
+  border-color: var(--accent-gold);
+  background-color: var(--bg-surface);
+}
+
+.card-icon {
+  font-size: 1.1rem;
+  color: var(--accent-gold);
+}
+
+.card-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.card-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.card-value {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.chevron-icon {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* Section Headings inside Drawer */
+.drawer-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.section-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-secondary);
+  margin-bottom: 2px;
+}
+
+/* Drawer Navigation List */
+.drawer-nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.drawer-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.drawer-nav-item:hover {
+  background-color: var(--bg-subtle);
+  color: var(--accent-gold);
+}
+
+.item-icon {
+  width: 24px;
+  display: flex;
+  justify-content: center;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+.drawer-nav-item:hover .item-icon {
+  color: var(--accent-gold);
+}
+
+.item-label {
+  flex: 1;
+}
+
+.arrow-icon {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  transition: transform 0.2s ease;
+}
+
+.drawer-nav-item:hover .arrow-icon {
+  transform: translateX(3px);
+  color: var(--accent-gold);
 }
 
 /* Main Container & Hero */
