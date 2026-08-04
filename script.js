@@ -85,44 +85,69 @@ const productsData = Array.from({ length: 40 }).map((_, index) => {
 let cart = [];
 let currentCategory = 'all';
 let searchKeyword = '';
-let maxPrice = 500;
+let maxPrice = 1500;
+let sortOption = 'featured';
 
-// DOM Elements Selection
+// DOM Elements Selection (Matching HTML IDs)
 const productGrid = document.getElementById('product-grid');
+const productCountLabel = document.getElementById('product-count-label');
+
 const cartDrawer = document.getElementById('cart-drawer');
-const cartOverlay = document.getElementById('cart-overlay');
-const cartToggleBtn = document.getElementById('cart-toggle');
-const closeCartBtn = document.getElementById('close-cart');
-const cartItemsContainer = document.getElementById('cart-items');
-const cartCountBadge = document.getElementById('cart-count');
+const cartOverlay = document.getElementById('cart-drawer-overlay');
+const cartToggleBtn = document.getElementById('cart-drawer-open');
+const closeCartBtn = document.getElementById('cart-drawer-close');
+
+const cartItemsContainer = document.getElementById('cart-drawer-items');
+const cartCountBadge = document.getElementById('cart-badge');
+const cartDrawerCount = document.getElementById('cart-drawer-count');
 const cartSubtotalEl = document.getElementById('cart-subtotal');
 const cartTaxEl = document.getElementById('cart-tax');
-const cartTotalEl = document.getElementById('cart-total');
-const searchInput = document.getElementById('search-input');
+const cartTotalEl = document.getElementById('cart-grand-total');
+
+const menuDrawer = document.getElementById('side-menu-drawer');
+const menuOverlay = document.getElementById('menu-drawer-overlay');
+const menuToggleBtn = document.getElementById('sidebar-toggle');
+const closeMenuBtn = document.getElementById('menu-drawer-close');
+
+const searchInput = document.getElementById('main-search-input');
 const priceRangeInput = document.getElementById('price-range');
-const priceValueDisplay = document.getElementById('price-value');
+const priceValueDisplay = document.getElementById('price-range-val');
+const sortSelect = document.getElementById('sort-select');
+const categoryFilters = document.getElementById('category-filters');
+
 const themeToggleBtn = document.getElementById('theme-toggle');
-const categoryNav = document.getElementById('category-nav');
-const menuDrawer = document.getElementById('menu-drawer');
-const menuOverlay = document.getElementById('menu-overlay');
-const menuToggleBtn = document.getElementById('menu-toggle');
-const closeMenuBtn = document.getElementById('close-menu');
+const scrollProgress = document.getElementById('scroll-progress');
+const backToTopBtn = document.getElementById('back-to-top');
 
 // Initialization
 document.addEventListener('DOMContentLoaded', () => {
   renderProducts();
   setupEventListeners();
-  startCountdownTimers();
+  startCountdownTimer();
+  setupHeroSlider();
 });
 
-// Render Product Grid
+// Render Product Grid with Filtering and Sorting
 function renderProducts() {
-  const filteredProducts = productsData.filter(product => {
+  let filteredProducts = productsData.filter(product => {
     const matchesCategory = currentCategory === 'all' || product.category === currentCategory;
     const matchesSearch = product.title.toLowerCase().includes(searchKeyword.toLowerCase());
     const matchesPrice = product.price <= maxPrice;
     return matchesCategory && matchesSearch && matchesPrice;
   });
+
+  // Sorting Logic
+  if (sortOption === 'price-low') {
+    filteredProducts.sort((a, b) => a.price - b.price);
+  } else if (sortOption === 'price-high') {
+    filteredProducts.sort((a, b) => b.price - a.price);
+  } else if (sortOption === 'rating') {
+    filteredProducts.sort((a, b) => b.rating - a.rating);
+  }
+
+  if (productCountLabel) {
+    productCountLabel.textContent = `Showing ${filteredProducts.length} items`;
+  }
 
   if (filteredProducts.length === 0) {
     productGrid.innerHTML = `
@@ -136,24 +161,19 @@ function renderProducts() {
 
   productGrid.innerHTML = filteredProducts.map(product => `
     <article class="product-card">
-      <div class="card-image-wrapper">
-        <img src="${product.image}" alt="${product.title}" loading="lazy" />
-        ${product.isFlashSale ? `<span class="badge flash-badge">Deal</span>` : ''}
-        <button class="quick-add-btn" onclick="addToCart(${product.id})" aria-label="Add to cart">
-          Add to Cart
-        </button>
+      <div class="card-image-wrapper" style="position: relative; overflow: hidden; border-radius: var(--radius-sm);">
+        <img src="${product.image}" alt="${product.title}" loading="lazy" style="width: 100%; height: 200px; object-fit: cover;" />
+        ${product.isFlashSale ? `<span class="badge flash-badge" style="position: absolute; top: 10px; left: 10px; background: var(--accent-gold); color: #000; font-weight: 700; font-size: 0.75rem; padding: 2px 8px; border-radius: var(--radius-full);">Deal</span>` : ''}
       </div>
-      <div class="card-content">
-        <span class="category-tag">${product.category}</span>
-        <h3 class="product-title">${product.title}</h3>
-        <div class="rating-row">
-          <span class="stars">★</span>
-          <span class="rating-val">${product.rating}</span>
-          <span class="review-count">(${product.reviews})</span>
+      <div class="card-content" style="padding: 12px 0;">
+        <span class="category-tag" style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;">${product.category}</span>
+        <h3 class="product-title" style="font-size: 0.95rem; margin: 4px 0;">${product.title}</h3>
+        <div class="rating-row" style="font-size: 0.85rem; color: var(--accent-gold);">
+          ★ <span>${product.rating}</span> <span style="color: var(--text-secondary);">(${product.reviews})</span>
         </div>
-        <div class="price-row">
-          <span class="current-price">$${product.price}.00</span>
-          ${product.isFlashSale ? `<span class="original-price">$${Math.floor(product.price * 1.25)}.00</span>` : ''}
+        <div class="price-row" style="margin-top: 8px; display: flex; align-items: center; justify-content: space-between;">
+          <span style="font-weight: 700; font-size: 1.1rem;">$${product.price}.00</span>
+          <button class="btn-primary" onclick="addToCart(${product.id})" style="padding: 6px 12px; font-size: 0.8rem;">Add to Cart</button>
         </div>
       </div>
     </article>
@@ -191,7 +211,8 @@ window.removeFromCart = function(productId) {
 
 function updateCartUI() {
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-  cartCountBadge.textContent = totalItems;
+  if (cartCountBadge) cartCountBadge.textContent = totalItems;
+  if (cartDrawerCount) cartDrawerCount.textContent = `(${totalItems})`;
 
   if (cart.length === 0) {
     cartItemsContainer.innerHTML = `
@@ -206,23 +227,23 @@ function updateCartUI() {
   }
 
   cartItemsContainer.innerHTML = cart.map(item => `
-    <div class="cart-item">
-      <img src="${item.image}" alt="${item.title}" />
-      <div class="item-details">
-        <div class="item-title">${item.title}</div>
-        <div class="item-price">$${item.price}.00</div>
-        <div class="quantity-controls">
-          <button onclick="updateQuantity(${item.id}, -1)">-</button>
+    <div class="cart-item" style="display: flex; gap: 12px; margin-bottom: 16px; align-items: center;">
+      <img src="${item.image}" alt="${item.title}" style="width: 60px; height: 60px; object-fit: cover; border-radius: var(--radius-sm);" />
+      <div class="item-details" style="flex: 1;">
+        <div style="font-size: 0.85rem; font-weight: 600;">${item.title}</div>
+        <div style="font-size: 0.85rem; color: var(--accent-gold); font-weight: 700;">$${item.price}.00</div>
+        <div class="quantity-controls" style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
+          <button onclick="updateQuantity(${item.id}, -1)" style="padding: 2px 8px; cursor: pointer;">-</button>
           <span>${item.quantity}</span>
-          <button onclick="updateQuantity(${item.id}, 1)">+</button>
+          <button onclick="updateQuantity(${item.id}, 1)" style="padding: 2px 8px; cursor: pointer;">+</button>
         </div>
       </div>
-      <button class="remove-btn" onclick="removeFromCart(${item.id})" aria-label="Remove item">&times;</button>
+      <button onclick="removeFromCart(${item.id})" style="background: none; border: none; font-size: 1.2rem; color: var(--text-secondary); cursor: pointer;">&times;</button>
     </div>
   `).join('');
 
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const tax = subtotal * 0.08; // 8% estimated tax
+  const tax = subtotal * 0.08;
   const total = subtotal + tax;
 
   cartSubtotalEl.textContent = `$${subtotal.toFixed(2)}`;
@@ -232,71 +253,96 @@ function updateCartUI() {
 
 // Drawer Controls
 function openCart() {
-  cartDrawer.classList.add('active');
-  cartOverlay.classList.add('active');
+  if (cartDrawer) cartDrawer.classList.add('active');
+  if (cartOverlay) cartOverlay.classList.add('active');
   document.body.style.overflow = 'hidden';
 }
 
 function closeCart() {
-  cartDrawer.classList.remove('active');
-  cartOverlay.classList.remove('active');
+  if (cartDrawer) cartDrawer.classList.remove('active');
+  if (cartOverlay) cartOverlay.classList.remove('active');
   document.body.style.overflow = '';
 }
 
 function openMenu() {
-  menuDrawer.classList.add('active');
-  menuOverlay.classList.add('active');
+  if (menuDrawer) menuDrawer.classList.add('active');
+  if (menuOverlay) menuOverlay.classList.add('active');
   document.body.style.overflow = 'hidden';
 }
 
 function closeMenu() {
-  menuDrawer.classList.remove('active');
-  menuOverlay.classList.remove('active');
+  if (menuDrawer) menuDrawer.classList.remove('active');
+  if (menuOverlay) menuOverlay.classList.remove('active');
   document.body.style.overflow = '';
 }
 
 // Event Listeners
 function setupEventListeners() {
-  cartToggleBtn.addEventListener('click', openCart);
-  closeCartBtn.addEventListener('click', closeCart);
-  cartOverlay.addEventListener('click', closeCart);
+  if (cartToggleBtn) cartToggleBtn.addEventListener('click', openCart);
+  if (closeCartBtn) closeCartBtn.addEventListener('click', closeCart);
+  if (cartOverlay) cartOverlay.addEventListener('click', closeCart);
 
   if (menuToggleBtn) menuToggleBtn.addEventListener('click', openMenu);
   if (closeMenuBtn) closeMenuBtn.addEventListener('click', closeMenu);
   if (menuOverlay) menuOverlay.addEventListener('click', closeMenu);
 
-  searchInput.addEventListener('input', (e) => {
-    searchKeyword = e.target.value;
-    renderProducts();
-  });
-
-  priceRangeInput.addEventListener('input', (e) => {
-    maxPrice = parseInt(e.target.value, 10);
-    priceValueDisplay.textContent = `$${maxPrice}`;
-    renderProducts();
-  });
-
-  categoryNav.addEventListener('click', (e) => {
-    if (e.target.classList.contains('nav-link')) {
-      document.querySelectorAll('.nav-link').forEach(btn => btn.classList.remove('active'));
-      e.target.classList.add('active');
-      currentCategory = e.target.dataset.category;
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      searchKeyword = e.target.value;
       renderProducts();
-    }
+    });
+  }
+
+  if (priceRangeInput) {
+    priceRangeInput.addEventListener('input', (e) => {
+      maxPrice = parseInt(e.target.value, 10);
+      if (priceValueDisplay) priceValueDisplay.textContent = `$${maxPrice}`;
+      renderProducts();
+    });
+  }
+
+  if (categoryFilters) {
+    categoryFilters.addEventListener('change', (e) => {
+      if (e.target.name === 'category') {
+        currentCategory = e.target.value;
+        renderProducts();
+      }
+    });
+  }
+
+  if (sortSelect) {
+    sortSelect.addEventListener('change', (e) => {
+      sortOption = e.target.value;
+      renderProducts();
+    });
+  }
+
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+    });
+  }
+
+  // Scroll Progress and Back to Top
+  window.addEventListener('scroll', () => {
+    const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = (window.scrollY / totalHeight) * 100;
+    if (scrollProgress) scrollProgress.style.width = `${progress}%`;
   });
 
-  themeToggleBtn.addEventListener('click', () => {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', newTheme);
-  });
+  if (backToTopBtn) {
+    backToTopBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
 }
 
-// Flash Sale Countdown Timer
-function startCountdownTimers() {
-  let time = 3600 * 5; // 5 hours in seconds
-  const timerDisplay = document.getElementById('deal-timer');
-  
+// Countdown Timer
+function startCountdownTimer() {
+  let time = 3600 * 5;
+  const timerDisplay = document.getElementById('countdown-timer');
   if (!timerDisplay) return;
 
   setInterval(() => {
@@ -304,7 +350,7 @@ function startCountdownTimers() {
     const minutes = Math.floor((time % 3600) / 60);
     const seconds = time % 60;
 
-    timerDisplay.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    timerDisplay.textContent = `${String(hours).padStart(2, '0')} : ${String(minutes).padStart(2, '0')} : ${String(seconds).padStart(2, '0')}`;
     
     if (time > 0) {
       time--;
@@ -312,4 +358,34 @@ function startCountdownTimers() {
       time = 3600 * 5;
     }
   }, 1000);
+}
+
+// Simple Hero Slider Control
+function setupHeroSlider() {
+  const slides = document.querySelectorAll('.hero-slide');
+  const prevBtn = document.getElementById('slide-prev');
+  const nextBtn = document.getElementById('slide-next');
+  let currentSlide = 0;
+
+  if (slides.length === 0) return;
+
+  function showSlide(index) {
+    slides.forEach((slide, i) => {
+      slide.classList.toggle('active', i === index);
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      currentSlide = (currentSlide + 1) % slides.length;
+      showSlide(currentSlide);
+    });
+  }
+
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+      currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+      showSlide(currentSlide);
+    });
+  }
 }
