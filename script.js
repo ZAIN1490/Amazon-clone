@@ -1,345 +1,311 @@
-/**
- * AMAZON LUXE - VANILLA ES6+ E-COMMERCE CORE SYSTEM
- */
+// ==========================================================================
+// DATA ENGINE & PRODUCT STATE MANAGEMENT
+// ==========================================================================
 
-// Global Application State Store
-const state = {
-  products: [],
-  filteredProducts: [],
-  cart: [],
-  wishlist: [],
-  theme: localStorage.getItem('theme') || 'light',
-  activeCategory: 'all',
-  maxPrice: 2500,
-  minRating: 0,
-  sortBy: 'featured'
-};
-
-// Handcrafted 40 Premium Product Dataset Engine
-const rawProducts = [
-  { id: 1, title: 'Apple AirPods Max Wireless Over-Ear Headphones', brand: 'Apple', category: 'electronics', price: 549, oldPrice: 599, rating: 4.8, reviews: 1240, badge: 'Best Seller', image: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?q=80&w=600&auto=format&fit=crop' },
-  { id: 2, title: 'Sony WH-1000XM5 Noise Canceling Headphones', brand: 'Sony', category: 'electronics', price: 398, oldPrice: 420, rating: 4.7, reviews: 890, badge: 'Limited Offer', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=600&auto=format&fit=crop' },
-  { id: 3, title: 'MacBook Pro 16-inch M3 Max Studio Grade', brand: 'Apple', category: 'computing', price: 2499, oldPrice: 2699, rating: 4.9, reviews: 430, badge: 'New Arrival', image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=600&auto=format&fit=crop' },
-  { id: 4, title: 'Minimalist Italian Leather Chronograph Watch', brand: 'Vance', category: 'fashion', price: 280, oldPrice: 350, rating: 4.6, reviews: 210, badge: 'Trending', image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=600&auto=format&fit=crop' },
-  { id: 5, title: 'Modern Ergonomic Velvet Accent Studio Chair', brand: 'LuxeHome', category: 'home', price: 420, oldPrice: 499, rating: 4.5, reviews: 115, badge: 'Limited Offer', image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=600&auto=format&fit=crop' },
-  { id: 6, title: 'Ultra-Sharp 4K OLED Gaming Monitor 144Hz', brand: 'Asus', category: 'computing', price: 899, oldPrice: 999, rating: 4.8, reviews: 560, badge: 'Best Seller', image: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?q=80&w=600&auto=format&fit=crop' }
-];
-
-// Dynamically generate up to 40 items programmatically for deep catalog demonstration
-for (let i = 7; i <= 40; i++) {
-  const cats = ['electronics', 'fashion', 'home', 'computing'];
-  const cat = cats[i % cats.length];
-  rawProducts.push({
-    id: i,
-    title: `Premium Engineered Collection Item #${i} - Deluxe Edition`,
-    brand: `LuxeBrand ${i}`,
-    category: cat,
-    price: Math.floor(Math.random() * 800) + 99,
-    oldPrice: Math.floor(Math.random() * 1000) + 200,
-    rating: (Math.random() * (5.0 - 4.0) + 4.0).toFixed(1),
-    reviews: Math.floor(Math.random() * 500) + 20,
-    badge: i % 3 === 0 ? 'Best Seller' : 'New Arrival',
-    image: rawProducts[i % 6].image
-  });
-}
-
-// System Initialization Engine
-document.addEventListener('DOMContentLoaded', () => {
-  state.products = [...rawProducts];
-  state.filteredProducts = [...rawProducts];
+const productsData = Array.from({ length: 40 }).map((_, index) => {
+  const id = index + 1;
+  const categories = ['electronics', 'fashion', 'home', 'tech'];
+  const category = categories[index % categories.length];
   
-  initTheme();
-  initSlider();
-  initCountdown();
-  renderProducts();
-  initEventListeners();
-  initScrollEffects();
+  const titles = {
+    electronics: [`Wireless ANC Headphones v${id}`, `Studio Precision Monitor ${id}`, `Portable Bluetooth Speaker ${id}`],
+    fashion: [`Minimalist Leather Watch ${id}`, `Luxe Cashmere Hoodie ${id}`, `Urban Essential Backpack ${id}`],
+    home: [`Architectural Desk Lamp ${id}`, `Ceramic Diffuser ${id}`, `Ergonomic Office Chair ${id}`],
+    tech: [`Ultra-Slim Mechanical Keyboard ${id}`, `Pro Ergonomic Mouse ${id}`, `4K Cinema Display ${id}`]
+  };
+
+  const images = {
+    electronics: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80',
+    fashion: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80',
+    home: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=600&q=80',
+    tech: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=600&q=80'
+  };
+
+  const titleList = titles[category];
+  const title = titleList[index % titleList.length];
+
+  return {
+    id,
+    title,
+    category,
+    price: Math.floor(Math.random() * 400) + 29,
+    rating: (Math.random() * 1.5 + 3.5).toFixed(1),
+    reviews: Math.floor(Math.random() * 300) + 12,
+    image: images[category],
+    isFlashSale: index % 3 === 0
+  };
 });
 
-/* Theme Management Module */
-function initTheme() {
-  document.documentElement.setAttribute('data-theme', state.theme);
-}
+let cartState = [];
+let wishlistState = [];
 
-function toggleTheme() {
-  state.theme = state.theme === 'light' ? 'dark' : 'light';
-  document.documentElement.setAttribute('data-theme', state.theme);
-  localStorage.setItem('theme', state.theme);
-  showToast(`Switched to ${state.theme.toUpperCase()} mode`);
-}
+// ==========================================================================
+// INITIALIZATION & DOM ROUTING
+// ==========================================================================
+document.addEventListener('DOMContentLoaded', () => {
+  renderProductGrid(productsData);
+  initHeaderDrawerHandlers();
+  initThemeEngine();
+  initSliderEngine();
+  initCartDrawer();
+  initFilterEngine();
+  initCountdownTimer();
+  initScrollProgress();
+});
 
-/* Dynamic Product Grid Rendering */
-function renderProducts() {
-  const grid = document.getElementById('products-grid');
-  const countLabel = document.getElementById('results-count');
+// ==========================================================================
+// RENDER ENGINE
+// ==========================================================================
+function renderProductGrid(items) {
+  const grid = document.getElementById('product-grid');
+  const countLabel = document.getElementById('product-count-label');
   
   if (!grid) return;
   grid.innerHTML = '';
-  
-  countLabel.textContent = `Showing ${state.filteredProducts.length} items`;
 
-  if (state.filteredProducts.length === 0) {
-    grid.innerHTML = `<div class="no-results"><h3>No products match your filters</h3></div>`;
+  if (countLabel) countLabel.innerText = `Showing ${items.length} items`;
+
+  if (items.length === 0) {
+    grid.innerHTML = `<p class="no-results">No products matched your criteria.</p>`;
     return;
   }
 
-  state.filteredProducts.forEach(prod => {
+  items.forEach(product => {
     const card = document.createElement('div');
     card.className = 'product-card';
     card.innerHTML = `
-      <span class="badge-pill">${prod.badge}</span>
-      <div class="card-img-container">
-        <img src="${prod.image}" alt="${prod.title}" loading="lazy">
+      <div class="product-img-wrapper">
+        ${product.isFlashSale ? '<span class="badge-sale">SALE</span>' : ''}
+        <img src="${product.image}" alt="${product.title}" loading="lazy">
       </div>
-      <h4 class="prod-title">${prod.title}</h4>
-      <div class="rating-stars">
-        ${'<i class="fa-solid fa-star"></i>'.repeat(Math.floor(prod.rating))}
-        <span>(${prod.reviews})</span>
+      <h3 class="product-title">${product.title}</h3>
+      <div class="product-rating">
+        <i class="fa-solid fa-star"></i> ${product.rating} <span>(${product.reviews})</span>
       </div>
-      <div class="price-row">
-        <span class="current-price">$${prod.price}</span>
-        <span class="old-price">$${prod.oldPrice}</span>
-      </div>
-      <div class="card-actions">
-        <button class="add-cart-btn" onclick="addToCart(${prod.id})">Add to Cart</button>
-        <button class="quick-view-btn" onclick="openQuickView(${prod.id})"><i class="fa-regular fa-eye"></i></button>
+      <div class="product-price-row">
+        <span class="product-price">$${product.price}.00</span>
+        <button class="btn-add-cart" onclick="addToCart(${product.id})" aria-label="Add to cart">
+          <i class="fa-solid fa-plus"></i>
+        </button>
       </div>
     `;
     grid.appendChild(card);
   });
 }
 
-/* Reactive Filters & Search Core */
-function applyFilters() {
-  state.filteredProducts = state.products.filter(p => {
-    const matchesCat = state.activeCategory === 'all' || p.category === state.activeCategory;
-    const matchesPrice = p.price <= state.maxPrice;
-    const matchesRating = p.rating >= state.minRating;
-    return matchesCat && matchesPrice && matchesRating;
+// ==========================================================================
+// MINIMAL HEADER & DRAWER LOGIC
+// ==========================================================================
+function initHeaderDrawerHandlers() {
+  const sidebarToggle = document.getElementById('sidebar-toggle');
+  const sideMenuDrawer = document.getElementById('side-menu-drawer');
+  const menuDrawerOverlay = document.getElementById('menu-drawer-overlay');
+  const menuDrawerClose = document.getElementById('menu-drawer-close');
+
+  const openSideMenu = () => {
+    sideMenuDrawer?.classList.add('active');
+    menuDrawerOverlay?.classList.add('active');
+  };
+
+  const closeSideMenu = () => {
+    sideMenuDrawer?.classList.remove('active');
+    menuDrawerOverlay?.classList.remove('active');
+  };
+
+  sidebarToggle?.addEventListener('click', openSideMenu);
+  menuDrawerClose?.addEventListener('click', closeSideMenu);
+  menuDrawerOverlay?.addEventListener('click', closeSideMenu);
+
+  // Search input interaction
+  const mainSearch = document.getElementById('main-search-input');
+  mainSearch?.addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase();
+    const filtered = productsData.filter(p => p.title.toLowerCase().includes(query));
+    renderProductGrid(filtered);
   });
-
-  if (state.sortBy === 'price-low') {
-    state.filteredProducts.sort((a,b) => a.price - b.price);
-  } else if (state.sortBy === 'price-high') {
-    state.filteredProducts.sort((a,b) => b.price - a.price);
-  } else if (state.sortBy === 'rating') {
-    state.filteredProducts.sort((a,b) => b.rating - a.rating);
-  }
-
-  renderProducts();
 }
 
-/* Side Drawer Cart Operations */
-function addToCart(id) {
-  const item = state.products.find(p => p.id === id);
-  const existing = state.cart.find(c => c.id === id);
-  
+// ==========================================================================
+// CART & DRAWER SYSTEM
+// ==========================================================================
+function initCartDrawer() {
+  const openBtn = document.getElementById('cart-drawer-open');
+  const closeBtn = document.getElementById('cart-drawer-close');
+  const drawer = document.getElementById('cart-drawer');
+  const overlay = document.getElementById('cart-drawer-overlay');
+
+  const toggleCart = (open) => {
+    if (open) {
+      drawer?.classList.add('active');
+      overlay?.classList.add('active');
+    } else {
+      drawer?.classList.remove('active');
+      overlay?.classList.remove('active');
+    }
+  };
+
+  openBtn?.addEventListener('click', () => toggleCart(true));
+  closeBtn?.addEventListener('click', () => toggleCart(false));
+  overlay?.addEventListener('click', () => toggleCart(false));
+}
+
+window.addToCart = function(productId) {
+  const item = productsData.find(p => p.id === productId);
+  if (!item) return;
+
+  const existing = cartState.find(p => p.id === productId);
   if (existing) {
     existing.qty += 1;
   } else {
-    state.cart.push({ ...item, qty: 1 });
+    cartState.push({ ...item, qty: 1 });
   }
 
   updateCartUI();
-  showToast(`Added "${item.title.substring(0, 20)}..." to Cart`);
-}
+  showToast(`Added ${item.title} to cart`);
+};
 
 function updateCartUI() {
   const badge = document.getElementById('cart-badge');
-  const drawerCount = document.getElementById('cart-drawer-count');
-  const container = document.getElementById('cart-items-container');
-  
-  const totalQty = state.cart.reduce((acc, curr) => acc + curr.qty, 0);
-  badge.textContent = totalQty;
-  drawerCount.textContent = totalQty;
+  const itemsContainer = document.getElementById('cart-drawer-items');
+  const subtotalEl = document.getElementById('cart-subtotal');
+  const taxEl = document.getElementById('cart-tax');
+  const grandTotalEl = document.getElementById('cart-grand-total');
 
-  container.innerHTML = '';
+  const totalItems = cartState.reduce((acc, i) => acc + i.qty, 0);
+  if (badge) badge.innerText = totalItems;
+
+  if (!itemsContainer) return;
+  itemsContainer.innerHTML = '';
 
   let subtotal = 0;
 
-  state.cart.forEach(item => {
+  cartState.forEach(item => {
     subtotal += item.price * item.qty;
-    const cartCard = document.createElement('div');
-    cartCard.className = 'cart-item-card';
-    cartCard.innerHTML = `
+    const row = document.createElement('div');
+    row.className = 'cart-item-row';
+    row.innerHTML = `
       <img src="${item.image}" alt="${item.title}">
-      <div>
-        <h5 style="font-size: 0.85rem">${item.title}</h5>
-        <span>$${item.price}</span>
-        <div class="qty-control">
-          <button class="qty-btn" onclick="changeQty(${item.id}, -1)">-</button>
-          <span>${item.qty}</span>
-          <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
-        </div>
+      <div class="cart-item-details">
+        <h4>${item.title}</h4>
+        <p>$${item.price}.00 x ${item.qty}</p>
       </div>
-      <button style="background:none;border:none;color:red;cursor:pointer" onclick="removeFromCart(${item.id})">&times;</button>
     `;
-    container.appendChild(cartCard);
+    itemsContainer.appendChild(row);
   });
 
   const tax = subtotal * 0.08;
   const grandTotal = subtotal + tax;
 
-  document.getElementById('cart-subtotal').textContent = `$${subtotal.toFixed(2)}`;
-  document.getElementById('cart-tax').textContent = `$${tax.toFixed(2)}`;
-  document.getElementById('cart-total').textContent = `$${grandTotal.toFixed(2)}`;
+  if (subtotalEl) subtotalEl.innerText = `$${subtotal.toFixed(2)}`;
+  if (taxEl) taxEl.innerText = `$${tax.toFixed(2)}`;
+  if (grandTotalEl) grandTotalEl.innerText = `$${grandTotal.toFixed(2)}`;
 }
 
-function changeQty(id, delta) {
-  const item = state.cart.find(c => c.id === id);
-  if (!item) return;
-  
-  item.qty += delta;
-  if (item.qty <= 0) {
-    removeFromCart(id);
-  } else {
-    updateCartUI();
-  }
-}
+// ==========================================================================
+// FILTERS & SORTING ENGINE
+// ==========================================================================
+function initFilterEngine() {
+  const priceRange = document.getElementById('price-range');
+  const priceVal = document.getElementById('price-range-val');
+  const sortSelect = document.getElementById('sort-select');
+  const categoryRadios = document.querySelectorAll('input[name="category"]');
 
-function removeFromCart(id) {
-  state.cart = state.cart.filter(c => c.id !== id);
-  updateCartUI();
-}
+  const applyFilters = () => {
+    let result = [...productsData];
 
-/* Quick View Modal Launcher */
-function openQuickView(id) {
-  const item = state.products.find(p => p.id === id);
-  const modal = document.getElementById('quick-view-modal');
-  const body = document.getElementById('modal-body-content');
-
-  body.innerHTML = `
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: center;">
-      <img src="${item.image}" style="width:100%; border-radius:12px;">
-      <div>
-        <h3>${item.title}</h3>
-        <p style="color:var(--text-muted); margin: 8px 0;">Brand: ${item.brand}</p>
-        <h2 style="color:var(--amazon-orange); margin-bottom: 12px;">$${item.price}</h2>
-        <p style="font-size:0.9rem; margin-bottom:16px;">Engineered with state-of-the-art materials offering luxury standard reliability.</p>
-        <button class="btn-primary-luxe" onclick="addToCart(${item.id})">Add To Cart</button>
-      </div>
-    </div>
-  `;
-
-  modal.classList.add('active');
-}
-
-/* Hero Slider Engine */
-function initSlider() {
-  const slides = document.querySelectorAll('.slide');
-  let current = 0;
-
-  document.getElementById('slider-next')?.addEventListener('click', () => {
-    slides[current].classList.remove('active');
-    current = (current + 1) % slides.length;
-    slides[current].classList.add('active');
-  });
-
-  document.getElementById('slider-prev')?.addEventListener('click', () => {
-    slides[current].classList.remove('active');
-    current = (current - 1 + slides.length) % slides.length;
-    slides[current].classList.add('active');
-  });
-}
-
-/* Countdown Clock Engine */
-function initCountdown() {
-  let time = 31339; // Seconds counter
-  setInterval(() => {
-    time--;
-    const h = Math.floor(time / 3600);
-    const m = Math.floor((time % 3600) / 60);
-    const s = time % 60;
-
-    const hEl = document.getElementById('hours');
-    if (hEl) {
-      hEl.textContent = String(h).padStart(2, '0');
-      document.getElementById('minutes').textContent = String(m).padStart(2, '0');
-      document.getElementById('seconds').textContent = String(s).padStart(2, '0');
+    // Category
+    const selectedCat = document.querySelector('input[name="category"]:checked')?.value;
+    if (selectedCat && selectedCat !== 'all') {
+      result = result.filter(p => p.category === selectedCat);
     }
+
+    // Price Range
+    if (priceRange) {
+      const maxPrice = parseFloat(priceRange.value);
+      result = result.filter(p => p.price <= maxPrice);
+    }
+
+    // Sort
+    if (sortSelect) {
+      const val = sortSelect.value;
+      if (val === 'price-low') result.sort((a, b) => a.price - b.price);
+      if (val === 'price-high') result.sort((a, b) => b.price - a.price);
+      if (val === 'rating') result.sort((a, b) => b.rating - a.rating);
+    }
+
+    renderProductGrid(result);
+  };
+
+  priceRange?.addEventListener('input', (e) => {
+    if (priceVal) priceVal.innerText = `$${e.target.value}`;
+    applyFilters();
+  });
+
+  sortSelect?.addEventListener('change', applyFilters);
+  categoryRadios.forEach(radio => radio.addEventListener('change', applyFilters));
+}
+
+// ==========================================================================
+// UTILITY ENGINES
+// ==========================================================================
+function initThemeEngine() {
+  const toggleBtn = document.getElementById('theme-toggle');
+  toggleBtn?.addEventListener('click', () => {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', targetTheme);
+    showToast(`Switched to ${targetTheme} mode`);
+  });
+}
+
+function initSliderEngine() {
+  const slides = document.querySelectorAll('.hero-slide');
+  let index = 0;
+
+  setInterval(() => {
+    slides[index]?.classList.remove('active');
+    index = (index + 1) % slides.length;
+    slides[index]?.classList.add('active');
+  }, 5000);
+}
+
+function initCountdownTimer() {
+  const timerBox = document.getElementById('countdown-timer');
+  let secondsLeft = 14400; // 4 Hours
+
+  setInterval(() => {
+    if (secondsLeft <= 0) return;
+    secondsLeft--;
+    const h = String(Math.floor(secondsLeft / 3600)).padStart(2, '0');
+    const m = String(Math.floor((secondsLeft % 3600) / 60)).padStart(2, '0');
+    const s = String(secondsLeft % 60).padStart(2, '0');
+    if (timerBox) timerBox.innerText = `${h} : ${m} : ${s}`;
   }, 1000);
 }
 
-/* Scroll Effects & Progress Bar */
-function initScrollEffects() {
+function initScrollProgress() {
+  const bar = document.getElementById('scroll-progress');
+  const backToTop = document.getElementById('back-to-top');
+
   window.addEventListener('scroll', () => {
-    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    const scrolled = (winScroll / height) * 100;
-    
-    document.getElementById('scroll-progress').style.width = scrolled + '%';
-
-    const backTop = document.getElementById('back-to-top');
-    if (winScroll > 400) {
-      backTop?.classList.add('visible');
-    } else {
-      backTop?.classList.remove('visible');
-    }
-  });
-}
-
-/* Event Listeners Matrix */
-function initEventListeners() {
-  // Theme Toggle Button
-  document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme);
-
-  // Cart Drawer Open/Close
-  document.getElementById('cart-drawer-open')?.addEventListener('click', () => {
-    document.getElementById('cart-drawer').classList.add('active');
-    document.getElementById('drawer-overlay').classList.add('active');
+    const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = (window.scrollY / totalHeight) * 100;
+    if (bar) bar.style.width = `${progress}%`;
   });
 
-  const closeCart = () => {
-    document.getElementById('cart-drawer').classList.remove('active');
-    document.getElementById('drawer-overlay').classList.remove('active');
-  };
-
-  document.getElementById('cart-drawer-close')?.addEventListener('click', closeCart);
-  document.getElementById('drawer-overlay')?.addEventListener('click', closeCart);
-
-  // Quick View Modal Close
-  document.getElementById('modal-close-btn')?.addEventListener('click', () => {
-    document.getElementById('quick-view-modal').classList.remove('active');
-  });
-
-  // Category Sidebar Listeners
-  document.querySelectorAll('#filter-category li').forEach(li => {
-    li.addEventListener('click', (e) => {
-      document.querySelectorAll('#filter-category li').forEach(el => el.classList.remove('active'));
-      e.target.classList.add('active');
-      state.activeCategory = e.target.getAttribute('data-value');
-      applyFilters();
-    });
-  });
-
-  // Price Range Slider Listener
-  document.getElementById('price-range')?.addEventListener('input', (e) => {
-    state.maxPrice = Number(e.target.value);
-    document.getElementById('price-range-val').textContent = `$${state.maxPrice}`;
-    applyFilters();
-  });
-
-  // Sort Selection Listener
-  document.getElementById('sort-select')?.addEventListener('change', (e) => {
-    state.sortBy = e.target.value;
-    applyFilters();
-  });
-
-  // Back to Top Listener
-  document.getElementById('back-to-top-bar')?.addEventListener('click', () => {
+  backToTop?.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 }
 
-/* Utility Toast System */
-function showToast(msg) {
+function showToast(message) {
   const container = document.getElementById('toast-container');
+  if (!container) return;
+
   const toast = document.createElement('div');
   toast.className = 'toast';
-  toast.textContent = msg;
+  toast.innerText = message;
   container.appendChild(toast);
 
-  setTimeout(() => {
-    toast.remove();
-  }, 3000);
+  setTimeout(() => toast.remove(), 3000);
 }
